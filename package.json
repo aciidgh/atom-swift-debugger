@@ -1,0 +1,19 @@
+{
+  "name": "swift-debugger",
+  "main": "./lib/swift-debugger",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "keywords": [
+  ],
+  "activationCommands": {
+    "atom-workspace": "swift-debugger:toggle"
+  },
+  "repository": "https://github.com/atom/swift-debugger",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "atom-space-pen-views": "^2.0.0"
+  }
+}

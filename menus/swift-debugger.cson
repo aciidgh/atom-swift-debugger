@@ -1,0 +1,22 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Toggle swift-debugger'
+      'command': 'swift-debugger:toggle'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'swift-debugger'
+      'submenu': [
+        {
+          'label': 'Toggle'
+          'command': 'swift-debugger:toggle'
+        }
+      ]
+    ]
+  }
+]
