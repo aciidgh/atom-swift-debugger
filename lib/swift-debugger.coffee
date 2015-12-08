@@ -7,30 +7,21 @@ module.exports = SwiftDebugger =
   modalPanel: null
   subscriptions: null
 
-  createDebuggerView: ->
+  createDebuggerView: (lldb) ->
     unless @swiftDebuggerView?
       SwiftDebuggerView = require './swift-debugger-view'
-      @swiftDebuggerView = new SwiftDebuggerView()
+      @swiftDebuggerView = new SwiftDebuggerView(@lldb)
     @swiftDebuggerView
 
   activate: ({attached}={}) ->
-    @createDebuggerView().toggle() if attached
-
-    # @swiftDebuggerView = new SwiftDebuggerView(state.swiftDebuggerViewState)
-    # @modalPanel = atom.workspace.addModalPanel(item: @swiftDebuggerView.getElement(), visible: false)
-    # @swiftDebuggerView.addData("yo")
-    # @lldb = spawn 'lldb', ['/Users/aciid/mycode/CoffeeDemo/swift/hello']
-    # @lldbInputView = new LldbInputView(@lldb)
-    # # @lldb.stdin.write("breakpoint set -f hello.swift -l 2\n")
-    #
-    # @lldb.stdout.on 'data',(data) =>
-    #   @swiftDebuggerView.addData(data.toString().trim())
-    #   console.log "out: " + data
-    # @lldb.stderr.on 'data',(data) ->
-    #   console.log "stderr"
-    #   console.log data.toString().trim()
-    # @lldb.on 'exit',(code) ->
-    #   console.log "exit code:" + code
+    @lldb = spawn 'lldb', ['/Users/aciid/mycode/CoffeeDemo/swift/hello']
+    @createDebuggerView(@lldb).toggle() if attached
+    @lldb.stdout.on 'data',(data) =>
+      @swiftDebuggerView.addOutput(data.toString().trim())
+    @lldb.stderr.on 'data',(data) =>
+      @swiftDebuggerView.addOutput(data.toString().trim())
+    @lldb.on 'exit',(code) ->
+      console.log "exit code:" + code
 
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable

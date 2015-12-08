@@ -5,7 +5,6 @@ path = require 'path'
 module.exports =
 class SwiftDebuggerView extends View
   @content: ->
-    #
     @div class: 'swiftDebuggerView', =>
       @subview 'commandEntryView', new TextEditorView
         mini: true,
@@ -39,8 +38,9 @@ class SwiftDebuggerView extends View
     if atBottom
       @scrollToBottomOfOutput()
 
-  initialize: ->
-    console.log "initialized"
+  initialize: (lldb) ->
+    console.log "initialized lldb? " + lldb
+    @lldb = lldb
     @addOutput("Welcome to Swift Debugger")
     @subscriptions = atom.commands.add @element,
       'core:confirm': (event) =>
@@ -55,16 +55,18 @@ class SwiftDebuggerView extends View
 
   getCommand: ->
     command = @commandEntryView.getModel().getText()
-    @addOutput("(lldb) "  + command)
-    if(@stringIsBlank(command))
+    if(!@stringIsBlank(command))
       command
 
   cancelLLDBCommand: ->
     @commandEntryView.getModel().setText("")
 
   confirmLLDBCommand: ->
-    if(@getCommand())
-      @addOutput(@getCommand())
+    command = @getCommand()
+    if(command)
+      command = @getCommand()
+      @lldb.stdin.write(command + "\n")
+      # @addOutput(command)
     @commandEntryView.getModel().setText("")
 
   serialize: ->
