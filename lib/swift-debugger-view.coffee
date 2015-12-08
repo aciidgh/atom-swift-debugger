@@ -1,28 +1,60 @@
+{Disposable, CompositeDisposable} = require 'atom'
+{$, $$, View, TextEditorView, ScrollView} = require 'atom-space-pen-views'
+path = require 'path'
+
 module.exports =
-class SwiftDebuggerView
-  constructor: (serializedState) ->
-    # Create root element
-    @element = document.createElement('div')
-    @element.classList.add('swift-debugger')
+class SwiftDebuggerView extends View
+  @content: ->
+    @div class: 'swiftDebuggerView', =>
+      @subview 'commandEntryView', new TextEditorView
+        mini: true,
+        placeholderText: 'po foo'
+      @div class: 'panel-body', outlet: 'outputContainer', =>
+        @pre class: 'command-output', outlet: 'output'
 
-    # Create message element
-    message = document.createElement('div')
-    message.textContent = "iz iteee  The SwiftDebugger package is Alive! It's ALIVE!"
-    message.classList.add('message')
-    @element.appendChild(message)
+  clearOutput: ->
+    @output.empty()
 
-  addData: (str) ->
-    message = document.createElement('div')
-    message.textContent = str
-    message.classList.add('message')
-    @element.appendChild(message)
+  createOutputNode: (text) ->
+    node = $('<span />').text(text)
+    parent = $('<span />').append(node)
 
-  # Returns an object that can be retrieved when package is activated
+  addOutput: (data) ->
+    atBottom = @atBottomOfOutput()
+    node = @createOutputNode(data)
+    @output.append(node)
+    if atBottom
+      @scrollToBottomOfOutput()
+
+  initialize: ->
+    console.log "initialized"
+    @addOutput("something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something something ")
+
   serialize: ->
+    attached: @panel?.isVisible()
 
-  # Tear down any state and detach
   destroy: ->
-    @element.remove()
+    @detach()
 
-  getElement: ->
-    @element
+  toggle: ->
+    if @panel?.isVisible()
+      @detach()
+    else
+      @attach()
+
+  atBottomOfOutput: ->
+    @output[0].scrollHeight <= @output.scrollTop() + @output.outerHeight()
+
+  scrollToBottomOfOutput: ->
+    @output.scrollToBottom()
+
+  attach: ->
+    console.log "attach called"
+    @panel = atom.workspace.addBottomPanel(item: this)
+    @panel.show()
+    @scrollToBottomOfOutput()
+
+  detach: ->
+    console.log "detach"
+    @panel.destroy()
+    @panel = null
