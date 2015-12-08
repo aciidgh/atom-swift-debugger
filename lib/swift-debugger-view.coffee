@@ -10,10 +10,14 @@ class SwiftDebuggerView extends View
       @subview 'commandEntryView', new TextEditorView
         mini: true,
         placeholderText: 'po foo'
-       @button outlet: 'runBtn', click: 'runApp', class: 'btn', =>
-         @span 'run'
-       @button outlet: 'cleatBtn', click: 'clearOutput', class: 'btn', =>
-         @span 'clear'
+      @button outlet: 'runBtn', click: 'runApp', class: 'btn', =>
+        @span 'run'
+      @button outlet: 'cleatBtn', click: 'clearOutput', class: 'btn', =>
+        @span 'clear'
+      @button outlet: 'stepOver', click: 'stepOverBtnPressed', class: 'btn', =>
+        @span 'next line'
+      @button outlet: 'resume', click: 'resumeBtnPressed', class: 'btn', =>
+        @span 'resume'
       @div class: 'panel-body', outlet: 'outputContainer', =>
         @pre class: 'command-output', outlet: 'output'
 
