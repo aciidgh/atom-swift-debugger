@@ -1,5 +1,5 @@
 {Disposable, CompositeDisposable} = require 'atom'
-{$, $$, View, TextEditorView, ScrollView} = require 'atom-space-pen-views'
+{$, $$, View, TextEditorView} = require 'atom-space-pen-views'
 path = require 'path'
 
 module.exports =
@@ -42,6 +42,30 @@ class SwiftDebuggerView extends View
   initialize: ->
     console.log "initialized"
     @addOutput("Welcome to Swift Debugger")
+    @subscriptions = atom.commands.add @element,
+      'core:confirm': (event) =>
+        @confirmLLDBCommand()
+        event.stopPropagation()
+      'core:cancel': (event) =>
+        @cancelLLDBCommand()
+        event.stopPropagation()
+
+  stringIsBlank: (str) ->
+    !str or /^\s*$/.test str
+
+  getCommand: ->
+    command = @commandEntryView.getModel().getText()
+    @addOutput("(lldb) "  + command)
+    if(@stringIsBlank(command))
+      command
+
+  cancelLLDBCommand: ->
+    @commandEntryView.getModel().setText("")
+
+  confirmLLDBCommand: ->
+    if(@getCommand())
+      @addOutput(@getCommand())
+    @commandEntryView.getModel().setText("")
 
   serialize: ->
     attached: @panel?.isVisible()
