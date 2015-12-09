@@ -1,9 +1,14 @@
 {
   "name": "swift-debugger",
   "main": "./lib/swift-debugger",
-  "version": "0.0.0",
-  "description": "A short description of your package",
+  "version": "0.0.9",
+  "description": "Develop and Debug swift projects",
   "keywords": [
+    "swift",
+    "develop swift",
+    "debug swift",
+    "swift package manager",
+    "lldb"
   ],
   "activationCommands": {
     "atom-workspace": ["swift-debugger:toggle","swift-debugger:breakpoint"]
