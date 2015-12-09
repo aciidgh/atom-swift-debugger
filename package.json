@@ -14,7 +14,7 @@
     "atom-workspace": ["swift-debugger:toggle","swift-debugger:breakpoint"]
 
   },
-  "repository": "https://github.com/atom/swift-debugger",
+  "repository": "https://github.com/aciidb0mb3r/atom-swift-debugger",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
