@@ -15,8 +15,7 @@ module.exports = SwiftDebugger =
   activate: ({attached}={}) ->
 
     @subscriptions = new CompositeDisposable
-    @breakpointGutter = atom.workspace.getActiveTextEditor().addGutter name: 'breakpoints'
-    @breakpointStore = new BreakpointStore(@breakpointGutter)
+    @breakpointStore = new BreakpointStore()
     @createDebuggerView().toggle() if attached
 
     @subscriptions.add atom.commands.add 'atom-workspace',
@@ -41,8 +40,8 @@ module.exports = SwiftDebugger =
     # console.log 'SwiftDebugger was toggled!'
     # shell = atom.config.get('run-command.shellCommand') || '/bin/bash'
     # editor = atom.workspace.getActiveTextEditor()
-    # activePath = editor?.getPath()
-    # relative = atom.project.relativizePath(activePath)
-    # themPaths = relative[0] || path.dirname(activePath)
+    activePath = editor?.getPath()
+    relative = atom.project.relativizePath(activePath)
+    themPaths = relative[0] || path.dirname(activePath)
     #
     # console.log themPaths

@@ -7,6 +7,9 @@ spawn = require('child_process').spawn
 path = require 'path'
 module.exports =
 class SwiftDebuggerView extends View
+  executableFileName: null
+  swiftPath: null
+
   @content: ->
     @div class: 'swiftDebuggerView', =>
       @subview 'commandEntryView', new TextEditorView
@@ -31,8 +34,34 @@ class SwiftDebuggerView extends View
   resumeBtnPressed: ->
     @lldb.stdin.write("c\n")
 
+  workspacePath: ->
+    editor = atom.workspace.getActiveTextEditor()
+    activePath = editor.getPath()
+    relative = atom.project.relativizePath(activePath)
+    pathToWorkspace = relative[0] || path.dirname(activePath)
+    pathToWorkspace
+
   runApp: ->
-    @lldb = spawn 'lldb', ['/Users/aciid/mycode/CoffeeDemo/swift/hello']
+    if(@lldb)
+      @stopApp
+
+    if(@pathsNotSet())
+      @askForPaths()
+      return
+
+    @swiftBuild = spawn @swiftPath+'/swift', ['build', '--chdir', @workspacePath()]
+    @swiftBuild.stdout.on 'data',(data) =>
+      @addOutput(data.toString().trim())
+    @swiftBuild.stderr.on 'data',(data) =>
+      @addOutput(data.toString().trim())
+    @swiftBuild.on 'exit',(code) =>
+      codeString = code.toString().trim()
+      if codeString == '0'
+        @runLLDB()
+      @addOutput("built with code : " + codeString)
+
+  runLLDB: ->
+    @lldb = spawn @swiftPath+"/lldb", [@workspacePath()+"/.build/debug/"+@executableFileName]
 
     for breakpoint in @breakpointStore.breakpoints
       @lldb.stdin.write(breakpoint.toCommand()+'\n')
@@ -63,16 +92,45 @@ class SwiftDebuggerView extends View
     if atBottom
       @scrollToBottomOfOutput()
 
+  pathsNotSet: ->
+    !@swiftPath || !@executableFileName
+
+  askForPaths: ->
+    if @pathsNotSet()
+      @addOutput("Please enter executable and swift path using e=nameOfExecutable then p=path/to/swift")
+      @addOutput("Example e=helloWorld")
+      @addOutput("Example p=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin")
+
   initialize: (breakpointStore) ->
     @breakpointStore = breakpointStore
     @addOutput("Welcome to Swift Debugger")
+    @askForPaths()
     @subscriptions = atom.commands.add @element,
       'core:confirm': (event) =>
-        @confirmLLDBCommand()
+        if @parseAndSetPaths()
+          @clearInputText()
+        else
+          @confirmLLDBCommand()
         event.stopPropagation()
       'core:cancel': (event) =>
         @cancelLLDBCommand()
         event.stopPropagation()
+
+  parseAndSetPaths:() ->
+    command = @getCommand()
+    if !command
+      return false
+    if /e=(.*)/.test command
+      match = /e=(.*)/.exec command
+      @executableFileName = match[1]
+      @addOutput("executable path set")
+      return true
+    if /p=(.*)/.test command
+      match = /p=(.*)/.exec command
+      @swiftPath = match[1]
+      @addOutput("swift path set")
+      return true
+    return false
 
   stringIsBlank: (str) ->
     !str or /^\s*$/.test str
@@ -86,11 +144,15 @@ class SwiftDebuggerView extends View
     @commandEntryView.getModel().setText("")
 
   confirmLLDBCommand: ->
+    if !@lldb
+      @addOutput("Program not running")
+      return
     command = @getCommand()
     if(command)
-      command = @getCommand()
       @lldb.stdin.write(command + "\n")
-      # @addOutput(command)
+      @clearInputText()
+
+  clearInputText: ->
     @commandEntryView.getModel().setText("")
 
   serialize: ->
