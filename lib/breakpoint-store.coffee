@@ -14,14 +14,20 @@ class BreakpointStore
     else
       @breakpoints.push(breakpoint)
 
+    editor = atom.workspace.getActiveTextEditor()
+
     if addDecoration
-      editor = atom.workspace.getActiveTextEditor()
       marker = editor.markBufferPosition([breakpoint.lineNumber-1, 0])
-      d = editor.decorateMarker(marker, type: 'line-number', class: 'line-number-green')
-      d.setProperties(type: 'line-number', class: 'line-number-green')
+      d = editor.decorateMarker(marker, type: 'line-number', class: 'line-number-blue')
+      d.setProperties(type: 'line-number', class: 'line-number-blue')
       breakpoint.decoration = d
     else
-      breakpointSearched.decoration.getMarker().destroy()
+      editor = atom.workspace.getActiveTextEditor()
+      ds = editor.getLineNumberDecorations(type: 'line-number', class: 'line-number-blue')
+      for d in ds
+        marker = d.getMarker()
+        if marker.getBufferRange().start.row == breakpoint.lineNumber-1
+          marker.destroy()
 
   containsBreakpoint: (bp) ->
     for breakpoint in @breakpoints
