@@ -9,3 +9,4 @@
 # https://atom.io/docs/latest/behind-atom-keymaps-in-depth
 'atom-workspace':
   'ctrl-r': 'swift-debugger:toggle'
+  'ctrl-shift-r': 'swift-debugger:breakpoint'

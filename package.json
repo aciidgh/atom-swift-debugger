@@ -6,7 +6,8 @@
   "keywords": [
   ],
   "activationCommands": {
-    "atom-workspace": "swift-debugger:toggle"
+    "atom-workspace": ["swift-debugger:toggle","swift-debugger:breakpoint"]
+
   },
   "repository": "https://github.com/atom/swift-debugger",
   "license": "MIT",

@@ -1,0 +1,64 @@
+@import "ui-variables";
+@import "syntax-variables";
+@red-color: @syntax-color-removed;
+@green-color: @syntax-color-added;
+@blue-color: @syntax-color-renamed;
+
+
+// Note: This file is specially named!
+// Less files with the name `*.atom-text-editor.less` will be loaded into the text-editor!
+//
+// Since these styles applies to the editor, this file needs to be loaded in the
+// context of the editor.
+
+// Very specific way to style the gutter numbers. Doing this so they show up
+// above the `.cursor-line` decorations applied when you select lines.
+//
+// A less specific way to select them would be
+//
+// `.gutter .line-number.gutter-green`{}
+//
+// But will be overridden by the `.cursor-line` decorations.
+atom-text-editor::shadow .gutter .line-number {
+  &.line-number-green {
+    color: #fff;
+    background-color: @green-color;
+  }
+
+  &.line-number-blue {
+    color: #fff;
+    background-color: @blue-color;
+  }
+
+  &.line-number-red {
+    color: #fff;
+    background-color: @red-color;
+  }
+}
+
+.line {
+  &.line-green {
+    background-color: @green-color;
+  }
+
+  &.line-blue {
+    background-color: @blue-color;
+  }
+
+  &.line-red {
+    background-color: @red-color;
+  }
+}
+
+// Remember: no default styling is provided for highlight decorations.
+.highlight-green .region {
+  background-color: @green-color;
+}
+
+.highlight-blue .region {
+  background-color: @blue-color;
+}
+
+.highlight-red .region {
+  background-color: @red-color;
+}

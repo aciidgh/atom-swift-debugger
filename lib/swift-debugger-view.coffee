@@ -1,7 +1,10 @@
 {Disposable, CompositeDisposable} = require 'atom'
 {$, $$, View, TextEditorView} = require 'atom-space-pen-views'
-path = require 'path'
+Breakpoint = require './breakpoint'
+BreakpointStore = require './breakpoint-store'
 
+spawn = require('child_process').spawn
+path = require 'path'
 module.exports =
 class SwiftDebuggerView extends View
   @content: ->
@@ -11,6 +14,8 @@ class SwiftDebuggerView extends View
         placeholderText: 'po foo'
       @button outlet: 'runBtn', click: 'runApp', class: 'btn', =>
         @span 'run'
+      @button outlet: 'stopBtn', click: 'stopApp', class: 'btn', =>
+        @span 'stop'
       @button outlet: 'cleatBtn', click: 'clearOutput', class: 'btn', =>
         @span 'clear'
       @button outlet: 'stepOver', click: 'stepOverBtnPressed', class: 'btn', =>
@@ -20,8 +25,28 @@ class SwiftDebuggerView extends View
       @div class: 'panel-body', outlet: 'outputContainer', =>
         @pre class: 'command-output', outlet: 'output'
 
+  stepOverBtnPressed: ->
+    @lldb.stdin.write("n\n")
+
+  resumeBtnPressed: ->
+    @lldb.stdin.write("c\n")
+
   runApp: ->
-    @addOutput("Trying to build app...")
+    @lldb = spawn 'lldb', ['/Users/aciid/mycode/CoffeeDemo/swift/hello']
+
+    for breakpoint in @breakpointStore.breakpoints
+      @lldb.stdin.write(breakpoint.toCommand()+'\n')
+
+    @lldb.stdin.write('r\n')
+    @lldb.stdout.on 'data',(data) =>
+      @addOutput(data.toString().trim())
+    @lldb.stderr.on 'data',(data) =>
+      @addOutput(data.toString().trim())
+    @lldb.on 'exit',(code) =>
+      @addOutput("exit code: " + code.toString().trim())
+
+  stopApp: ->
+    @lldb.stdin.write("\nexit\n")
 
   clearOutput: ->
     @output.empty()
@@ -38,9 +63,8 @@ class SwiftDebuggerView extends View
     if atBottom
       @scrollToBottomOfOutput()
 
-  initialize: (lldb) ->
-    console.log "initialized lldb? " + lldb
-    @lldb = lldb
+  initialize: (breakpointStore) ->
+    @breakpointStore = breakpointStore
     @addOutput("Welcome to Swift Debugger")
     @subscriptions = atom.commands.add @element,
       'core:confirm': (event) =>
