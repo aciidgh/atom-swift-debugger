@@ -29,10 +29,10 @@ class SwiftDebuggerView extends View
         @pre class: 'command-output', outlet: 'output'
 
   stepOverBtnPressed: ->
-    @lldb.stdin.write("n\n")
+    @lldb?.stdin.write("n\n")
 
   resumeBtnPressed: ->
-    @lldb.stdin.write("c\n")
+    @lldb?.stdin.write("c\n")
 
   workspacePath: ->
     editor = atom.workspace.getActiveTextEditor()
@@ -75,7 +75,8 @@ class SwiftDebuggerView extends View
       @addOutput("exit code: " + code.toString().trim())
 
   stopApp: ->
-    @lldb.stdin.write("\nexit\n")
+    @lldb?.stdin.write("\nexit\n")
+    @lldb = null
 
   clearOutput: ->
     @output.empty()
