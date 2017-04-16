@@ -25,7 +25,7 @@ $ mkdir MySwiftProject && touch MySwiftProject/main.swift && touch MySwiftProjec
 $ atom MySwiftProject
 ```
 
-###Give name to the swift package, Enter this in Package.swift
+### Give name to the swift package, Enter this in Package.swift
 ```objc
 import PackageDescription
 
@@ -34,7 +34,7 @@ let package = Package(
 )
 ```
 
-###Enter some sample code in main.swift 
+### Enter some sample code in main.swift 
 ```objc 
 let myAwesomeString = "hey I am an awesome string"
 print(myAwesomeString)
@@ -46,17 +46,17 @@ print(awesomeInt)
 
 ![Swift Debugger](https://cdn-images-1.medium.com/max/1600/1*ZhoyYtvLzQhvCMjhtlpFxQ.png)
 
-###Set executable and swift path for debugger
+### Set executable and swift path for debugger
 
 Enter this in the input box of the debugger
 `e=MySwiftProject` (press enter)
 `p=/home/aciid/swift/swift-2.2-SNAPSHOT-2015–12–01-b-ubuntu15.10/usr/bin` (press enter)
 Debugger will print: "swift path set" and "executable path set" respectively
 
-###Press "run" to build and run the code
+### Press "run" to build and run the code
 ![](https://cdn-images-1.medium.com/max/1600/1*G1w5YyDLhYfHWCynDD7p0A.png)
 
-###alt-shift-r to toggle breakpoint at the current line
+### alt-shift-r to toggle breakpoint at the current line
 ![](https://cdn-images-1.medium.com/max/1600/1*6ji_E4xS2rswKuTStTmqYQ.png)
 
 After toggling the breakpoint, press run and then enter `p myAwesomeString` to print the object
