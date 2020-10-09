@@ -25,7 +25,7 @@ $ mkdir MySwiftProject && touch MySwiftProject/main.swift && touch MySwiftProjec
 $ atom MySwiftProject
 ```
 
-###Give name to the swift package, Enter this in Package.swift
+### Give name to the swift package, Enter this in Package.swift
 ```objc
 import PackageDescription
 
@@ -34,7 +34,7 @@ let package = Package(
 )
 ```
 
-###Enter some sample code in main.swift 
+### Enter some sample code in main.swift 
 ```objc 
 let myAwesomeString = "hey I am an awesome string"
 print(myAwesomeString)
@@ -46,7 +46,7 @@ print(awesomeInt)
 
 ![Swift Debugger](https://cdn-images-1.medium.com/max/1600/1*ZhoyYtvLzQhvCMjhtlpFxQ.png)
 
-###Set executable and swift path for debugger
+### Set executable and swift path for debugger
 
 Enter this in the input box of the debugger
 `e=MySwiftProject` (press enter)
